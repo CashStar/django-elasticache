@@ -1,0 +1,43 @@
+sudo: false
+language: python
+python:
+  - 3.6
+  - 3.7
+  - 3.8
+cache: pip
+env:
+  - DJANGO=2.2
+  - DJANGO=3.0
+  - DJANGO=3.1
+  - DJANGO=dev
+
+matrix:
+  include:
+    - python: 3.8
+      env: TOXENV=flake8
+    - python: 3.8
+      env: TOXENV=isort
+    - python: 3.8
+      env: TOXENV=readme
+    - python: 3.8
+      env: TOXENV=check-manifest
+  allow_failures:
+    - env: DJANGO=dev
+install:
+- travis_retry python3 -m pip install tox-travis
+script:
+- tox
+deploy:
+  provider: pypi
+  username: __token__
+  password:
+    secure: "HBbDdcrrzRrSXbQGz3cz24/xNIW77tVlHQ+D6DS5raOSV7en5CPaiWZ50YkMQa08nfBOR1RBT8JivrC05qz1+TqMwOz0+rinFeGPmu9gLY8f+1kx0UZnmXG7GHsm6dBGOP6nIHA40+rtK/YLuhskdd2hEBIOAuAxXuCSd1UQ/3bj/nuspDwcot9OdJiyn+Xl+cjI39Gt8WlF7ZBjgFRw1hNSIJ2f0or38zf+SSDY6QgKiJZCn+4sooy0assCms84LSKumSl7Ya50IWwBGJgJaNPxikqgTf3rDP9bT25OLtJw78zJnO4QC2PJ9Y7j2tzeYkelHJM794uAtKNaW1SanlYdBXQoE7m1CE8DszZxCtN/siuz+30whFJ885pPaSN3m5uJct/v9GxBEAHtoCrwwdfrTvzVCU43PGwPZvO768k465rRGUnBInLybO5hTq6myajecZB2WhVXMh7/KMcXlVtnD5PvIhxLkLPVIGBK+1wFfvH/4ijZl8Dhz5PXP53AcX/Ohdli7+kd9DQEvieE2bhDpBaJq2r7B4etW/bjz76GQ704uzuF5JXXEibaT1fox8nqJzghuWfcXJvoTa20iR1quuHg0Z4qBIYh76CUXafi4iIZ0fCcIDVPWM7KSp1rvt4BgCdi1csQdTasw0l0WGoKdOSu+LlNSrqzPLoXQlE="
+  distributions: sdist bdist_wheel
+  skip_upload_docs: true
+  on:
+    repo: harikitech/django-elastipymemcache
+    tags: true
+    python: 3.8
+    condition: "$DJANGO = 3.0"
+notifications:
+  email: false
