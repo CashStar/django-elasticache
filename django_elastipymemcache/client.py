@@ -1,7 +1,7 @@
 import logging
-from distutils.version import StrictVersion
+from packaging.version import Version
 
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from pymemcache.client.base import Client, _readline
 from pymemcache.exceptions import MemcacheUnknownError
 
@@ -17,7 +17,7 @@ class ConfigurationEndpointClient(Client):
         return client
 
     def _get_cluster_info_cmd(self):
-        if StrictVersion(smart_text(self.version())) < StrictVersion('1.4.14'):
+        if Version(self.version()) < Version("1.4.14"):
             return b'get AmazonElastiCache:cluster\r\n'
         return b'config get cluster\r\n'
 
@@ -27,7 +27,7 @@ class ConfigurationEndpointClient(Client):
         for raw_node in raw_nodes.split(b' '):
             host, ip, port = raw_node.split(b'|')
             nodes.append('{host}:{port}'.format(
-                host=smart_text(ip or host),
+                host=smart_str(ip or host),
                 port=int(port)
             ))
         return {
